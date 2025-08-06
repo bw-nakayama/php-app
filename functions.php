@@ -10,7 +10,8 @@ function getSelectedTodo($id)
 
 function savePostedData($post)
 {
-    checkToken($post['token']); // 追記
+    checkToken($post['token']);
+    validate($post); // 追記
     $path = getRefererPath();
     switch ($path) {
         case '/new.php':
@@ -93,3 +94,14 @@ function redirectToPostedPage()
 //トークンは第三者のページが確認することができないもの。
 //ページに入ってから出るまでしか持続しないので
 //今回のswitch文と組み合わせることではじける？
+
+
+//$postに['content']キーに対応する値が存在するかを調べたいが後者のみでは
+//そもそもキーが存在しなかったときにエラーを吐いてしまう。
+function validate($post)
+{
+    if (isset($post['content']) && $post['content'] === '') {
+        $_SESSION['err'] = '入力がありません';
+        redirectToPostedPage();
+    }
+}
